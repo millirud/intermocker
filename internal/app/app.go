@@ -27,8 +27,6 @@ func Run(cfg *config.Config) {
 
 	handler.GET("/_mocker/healthz", system_routes.NewLivenessProbe())
 
-	mock_router.New(handler, Di)
-
 	httpServer := httpserver.New(
 		handler,
 		httpserver.Port(cfg.HTTP.Port),
@@ -37,6 +35,13 @@ func Run(cfg *config.Config) {
 	)
 
 	l.Info().Msgf("server started on port %s", cfg.HTTP.Port)
+
+	// init mock routers
+	mock_router.New(handler, Di)
+
+	handler.GET("/_mocker/healthz/ready", system_routes.NewLivenessProbe())
+
+	l.Info().Msgf("readiness probe added")
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
