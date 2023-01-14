@@ -1,16 +1,23 @@
 package entity
 
-func NewRouteBuilder(method string, path string) *RouteBuilder {
-	return &RouteBuilder{
-		route: &Route{},
+func NewRouteSignatureBuilder(method string, path string) *RouteSignatureBuilder {
+	return &RouteSignatureBuilder{
+		route: &RouteSignature{
+			Method: method,
+			Path:   path,
+		},
 	}
 }
 
-type RouteBuilder struct {
-	route *Route
+type RouteSignatureBuilder struct {
+	route *RouteSignature
 }
 
-type Route struct {
+func (b *RouteSignatureBuilder) New() *RouteSignature {
+	return b.route
+}
+
+type RouteSignature struct {
 	Method string
 	Path   string
 }

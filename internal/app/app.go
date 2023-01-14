@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/millirud/intermocker/config"
+	"github.com/millirud/intermocker/internal/controller/mock_router"
 	system_routes "github.com/millirud/intermocker/internal/controller/system"
 	"github.com/millirud/intermocker/internal/di"
 	"github.com/millirud/intermocker/pkg/httpserver"
@@ -25,6 +26,8 @@ func Run(cfg *config.Config) {
 	handler := gin.Default()
 
 	handler.GET("/_mocker/healthz", system_routes.NewLivenessProbe())
+
+	mock_router.New(handler, Di)
 
 	httpServer := httpserver.New(
 		handler,
