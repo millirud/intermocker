@@ -1,8 +1,6 @@
 package http_routers_factory
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/millirud/intermocker/internal/entity"
 	"github.com/rs/zerolog"
@@ -26,7 +24,6 @@ func (r *HttpRoutersFactory) AddRoute(sig *entity.RouteSignature, response *enti
 	r.handler.Handle(sig.Method, sig.Path, func(c *gin.Context) {
 
 		for key, value := range response.Header {
-			fmt.Println(key, value)
 			c.Header(key, value)
 		}
 
