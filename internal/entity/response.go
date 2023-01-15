@@ -2,13 +2,12 @@ package entity
 
 import (
 	"io"
-	"net/http"
 	"time"
 )
 
-func NewHttpResponseBuilder(statusCode int, contentType string, reader io.ReadCloser) *HttpResponseBuilder {
+func NewHttpResponseBuilder(statusCode int, contentType string, contentReaderFn ContentReaderFn) *HttpResponseBuilder {
 	return &HttpResponseBuilder{
-		response: NewHttpResponse(statusCode, contentType, reader),
+		response: NewHttpResponse(statusCode, contentType, contentReaderFn),
 	}
 }
 
@@ -22,28 +21,29 @@ func (b *HttpResponseBuilder) Timeout(timeout *time.Duration) *HttpResponseBuild
 }
 
 func (b *HttpResponseBuilder) HeaderValue(key string, value string) *HttpResponseBuilder {
-	b.response.Header.Set(key, value)
+	b.response.Header[key] = value
 	return b
 }
 
-func (b *HttpResponseBuilder) Reader(reader io.ReadCloser) *HttpResponseBuilder {
-	b.response.Reader = reader
-	return b
+func (b *HttpResponseBuilder) New() *HttpResponse {
+	return b.response
 }
 
-func NewHttpResponse(statusCode int, contentType string, reader io.ReadCloser) *HttpResponse {
+func NewHttpResponse(statusCode int, contentType string, contentReaderFn ContentReaderFn) *HttpResponse {
 	return &HttpResponse{
-		StatusCode: statusCode,
-		Reader:     reader,
-		Header: http.Header{
-			"content-type": []string{contentType},
-		},
+		StatusCode:      statusCode,
+		Header:          make(map[string]string, 0),
+		ContentType:     contentType,
+		ContentReaderFn: contentReaderFn,
 	}
 }
 
+type ContentReaderFn = func() (reader io.Reader, length int64, contentType string, err error)
+
 type HttpResponse struct {
-	StatusCode int
-	Reader     io.ReadCloser
-	Header     http.Header
-	Timeout    time.Duration
+	StatusCode      int
+	ContentReaderFn ContentReaderFn
+	ContentType     string
+	Header          map[string]string
+	Timeout         time.Duration
 }

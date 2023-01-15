@@ -1,7 +1,7 @@
 package http_routers_factory
 
 import (
-	"net/http"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/millirud/intermocker/internal/entity"
@@ -20,11 +20,20 @@ type HttpRoutersFactory struct {
 	handler *gin.Engine
 }
 
-func (r *HttpRoutersFactory) AddRoute(sig *entity.RouteSignature) {
+func (r *HttpRoutersFactory) AddRoute(sig *entity.RouteSignature, response *entity.HttpResponse) {
 	r.logger.Info().Msgf("creating route %s %s", sig.Method, sig.Path)
 
 	r.handler.Handle(sig.Method, sig.Path, func(c *gin.Context) {
-		c.String(http.StatusOK, "it works")
+
+		for key, value := range response.Header {
+			fmt.Println(key, value)
+			c.Header(key, value)
+		}
+
+		reader, length, _, _ := response.ContentReaderFn()
+
+		c.DataFromReader(response.StatusCode, length, response.ContentType, reader, response.Header)
+
 	})
 }
 
