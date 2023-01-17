@@ -2,6 +2,7 @@ FROM golang:1.20rc2-buster as dev
 
 WORKDIR /home/app
 
+ENV GOTEST_PALETTE="magenta,white"
 
 COPY . .
 RUN go mod download

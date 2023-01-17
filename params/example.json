@@ -1,0 +1,17 @@
+{
+    "routes" : [
+        {
+            "req": {
+                "path": "/test/api",
+                "method": "POST"
+            },
+            "res": {
+                "type": "application/json",
+                "content": {
+                    "success": "true"
+                },
+                "timeout": 15000
+            }
+        }
+    ]
+}
