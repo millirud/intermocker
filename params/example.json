@@ -7,10 +7,32 @@
             },
             "res": {
                 "type": "application/json",
-                "content": {
+                "json": {
                     "success": "true"
                 },
-                "timeout": 15000
+                "timeout": 5000
+            }
+        },
+        {
+            "req": {
+                "path": "/view/image",
+                "method": "GET"
+            },
+            "res": {
+                "type": "image/png",
+                "file": "./params/demo.png",
+                "timeout": 3000
+            }
+        },
+        {
+            "req": {
+                "path": "/view/image",
+                "method": "GET"
+            },
+            "res": {
+                "type": "text/html",
+                "file": "./params/index.html",
+                "timeout": 3000
             }
         }
     ]
